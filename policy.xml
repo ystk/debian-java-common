@@ -1,0 +1,524 @@
+<?xml version='1.0'?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
+	"/usr/share/sgml/docbook/dtd/4.1/docbook.dtd"
+[
+<!ENTITY must "<emphasis>must</emphasis>">
+<!ENTITY mustnot "<emphasis>must not</emphasis>">
+<!ENTITY may "<emphasis>may</emphasis>">
+<!ENTITY should "<emphasis>should</emphasis>">
+<!ENTITY j1r "<emphasis>java1-runtime</emphasis>">
+<!ENTITY j2r "<emphasis>java2-runtime</emphasis>">
+<!ENTITY d-jdk "<emphasis>default-jdk</emphasis>">
+<!ENTITY d-jbdep "<emphasis>default-jdk-builddep</emphasis>">
+<!ENTITY d-jdoc "<emphasis>default-jdk-doc</emphasis>">
+<!ENTITY g-n-h "<emphasis>gcj-native-helper</emphasis>">
+<!ENTITY JVM "<acronym>JVM</acronym>">
+<!ENTITY JIT "<acronym>JIT</acronym>">
+<!ENTITY debpol "http://www.debian.org/doc/debian-policy">
+<!ENTITY djmail "<email>debian-java@lists.debian.org</email>">
+]>
+
+<book>
+  <bookinfo>
+    <title>Debian policy for Java</title>
+    <edition>$Revision:$ $Date:$</edition>
+    <authorgroup>
+      <author>
+	<surname>Thykier</surname>
+	<firstname>Niels</firstname>
+	<authorblurb>
+	  <para>
+	    <email>niels@thykier.net</email>
+	  </para>
+	  <para>
+	    The current author of the java policy.
+	  </para>
+	</authorblurb>
+      </author>
+      <author>
+	<surname>Lundqvist</surname>
+	<firstname>Ola</firstname>
+	<authorblurb>
+	  <para>
+	    <email>opal@debian.org</email>
+	  </para>
+	  <para>
+	    A previous author of the java policy.
+	  </para>
+	</authorblurb>
+      </author>
+      <author>
+	<surname>Bortzmeyer</surname>
+	<firstname>Stephane</firstname>
+	<authorblurb>
+	  <para>
+	    <email>bortzmeyer@debian.org</email>
+	  </para>
+	  <para>
+	    The original author of the java policy.
+	  </para>
+	</authorblurb>
+      </author>
+      <author>
+	<authorblurb>
+	  <para>
+	    Most issues of the java policy have been discussed on the
+	    &djmail; mailinglist.
+	  </para>
+	</authorblurb>
+      </author>
+    </authorgroup>
+    <abstract>
+      <title>Abstract</title>
+      <para>
+	This is the java policy for Debian. It begins with a
+	background description, continues with the real policy, some
+	issues to discuss and ends with some advices to java packagers.
+      </para>
+      <para>
+	The policy covers java virtual machines, java compilers, java
+	programs and java libraries.
+      </para>
+    </abstract>
+  </bookinfo>
+  
+  <chapter id="background">
+    <title>Background</title>
+    
+    <para>
+      There are several "subpolicies" in Debian. They all want to make
+      the <ulink url="&debpol;">Debian Policy</ulink> more precise when
+      it comes to a specific subject. See the Emacs subpolicy in package
+      emacsen-common for instance.  As far as I know, the only subpolicy
+      for a programming language, is that of
+      <ulink
+	url="http://non-us.debian.org/~hertzog/perl-policy.html/">Perl</ulink>.
+    </para>
+    
+    <para>
+      Feel free to report comments, suggestions and/or disagreements to the
+      java-common package (<email>java-common@packages.debian.org</email>)
+      or the Debian Java mailing list &djmail;. Change requests should be
+      sent as a bug to the java-common package.
+    </para>
+
+  </chapter>
+  
+  <chapter id="policy">
+    <title>Policy</title>
+    
+    <para>
+      Virtual packages are created: &j1r; and &j2r;.
+    </para>
+
+    <para>
+      Packages written in Java are separated in two categories: programs
+      and libraries. Programs are intended to be run by end-users. Libraries
+      are intended to help programs to run and to be used by developers.
+    </para>
+
+    <para>
+      Both &must; be shipped as Java bytecode (<filename>*.class</filename>
+      files, packaged in a <filename>*.jar</filename> archive) and with
+      an "Architecture: all". There are rare exceptions to this such as Eclipse
+      SWT. Exceptions to this rule can only be granted by the Java Team.
+      Requests &must; be sent to &djmail;.
+    </para>
+
+    <para>
+      The Java bytecode &may; additionally be shipped as machine code, as produced for example
+      by the GNU Compiler for Java, in a separate architecture-specific package.
+    </para>
+
+    <para>
+      Programs and libraries &should; enable JUnit tests, if these are present.
+      The build &may; ignore test failures.
+    </para>
+    
+    <sect1 id="policy-vm">
+      <title>Virtual machines</title>
+      
+      <para>
+	Java virtual machines &must; depend on java-common. They can also
+	provide the runtime environment	that the package contains (&j1r;
+	and/or &j2r;). If it does not provide the files itself it &must;
+	depend on the needed runtime environment.
+      </para>
+
+      <para>
+        Packages that contain a runtime conforming to the Java 1.1
+	specification &should; provide &j1r;. Packages that contain a runtime
+	conforming to the Java 2 specification &should; provide &j2r;.
+	If a package conforms to both, then it &should; provide both; however,
+	packages that do not implement the methods from Java 1.1 that have been
+	deprecated in Java 2 &mustnot; provide &j1r;.
+      </para>
+	
+      <para>
+	They &should; use <filename>/etc/alternatives</filename>
+	for the name 'java' if they are command-line compatible with the
+	Sun's java program.
+      </para>
+      <para>
+	They &should; have a CLASSPATH predefined which include the needed
+	runtime environment.
+      </para>
+      
+      <para>
+	If a given source (like the JDK does) brings both a compiler and a
+	virtual machine, you &may; name the compiler package xxxx-dev.
+      </para>
+      
+      <para>
+	Some Java classes implement their routines using a "native"
+	language (such as C).  This native code is compiled and stored
+	in dynamic libraries (such as JNI modules) that are loaded at
+	runtime.  If a virtual machine supports native code, it &must;
+	include the directory <filename>/usr/lib/jni</filename> in its
+	search path for these dynamic libraries.
+      </para>
+    </sect1>
+    
+    <sect1 id="policy-programs">
+      <title>Java programs</title>
+      
+      <para>
+	Programs &must; have one or more executables in one or more of
+	the directories defined by <ulink url="&debpol;/ch-opersys.html#s9.1">
+	9.1</ulink> of the Debian Policy. These &must; either be a wrapper
+	script or a symlink to an executable jar. In any case, they &must; run
+	without specific environment variables (see
+	<ulink url="&debpol;/ch-opersys.html#s10.9">Policy 10.9</ulink>), for
+	instance CLASSPATH. They &must; respect the Policy rules for
+	executables (for instance a manual page per executable, see
+	<ulink url="&debpol;/ch-docs.html#s13.1">
+	  Policy 13.1</ulink>).
+      </para>
+
+      <para>
+	If the package installs a jar (or a symlink to a jar) as an executable
+	the package &must; have an absolute dependency on jarwrapper or an
+	equivalent package, which allows jar files to be executed directly
+	from PATH like a normal program. The package &must; also ensure that
+	the correct class is used as main-class. As an example jarwrapper
+	uses the Main-Class attribute from the main part of the Manifest of the
+	jar file to determine this.
+      </para>
+
+      <para>
+	Additional classes in the package must be packaged in one or more JARs 
+	which can be put into /usr/share/java (if they are intended to be used 
+	by other programs) or into a private directory in
+	/usr/share/&lt;package&gt;.
+      </para>
+      <para>
+        Programs &must; depend on the needed runtime environment (&j1r; and/or
+	&j2r;).
+      </para>
+      <para>
+        There is no naming rules for programs, they are ordinary programs,
+	from the user point of view.
+      </para>
+    </sect1>
+    
+    <sect1 id="policy-libraries">
+      <title>Java libraries</title>
+      
+      <para>
+	Libraries are not separated between developers (-dev) and users
+	versions, since this is meaningless in Java.
+      </para>
+      
+      <para>
+	Java libraries packages &must; be named libXXX[version]-java
+	(without the brackets), where the version part is optional and &should;
+	only contain the necessary part. The version part &should; only be
+	used to avoid naming collisions. The XXX part is the actual package
+	name used in the text below.
+      </para>
+      
+      <para>
+	Their classes &must; be in <filename>jar</filename> archive(s) in
+	the directory <filename>/usr/share/java</filename>, with the name
+	<filename>packagename[-extraname]-fullversion.jar</filename>.
+	The extraname is optional and used internally within the package to
+	separate the different jars provided by the package. The fullversion
+	is the version of that jar file. In some cases that is not the same as
+	the package version.
+      </para>
+      <para>
+	Some package &must; also provide a symbolic link from
+	<filename>packagename-extraname.jar</filename> to the most compatible
+	version of the available
+	<filename>packagename-extraname-version.jar</filename> files.
+      </para>
+
+      <para>
+	Class files in a java library &must; be built with debug symbols.
+      </para>
+
+      <para>
+	All jar files &must; have a well-documented CLASSPATH, so 
+	that developers should know what to add to their wrappers.
+      </para>
+
+      <para>
+	This applies only to libraries, <emphasis>not</emphasis> to the core
+	classes provided by a the runtime environment.
+      </para>
+
+      <para>
+	Some Java libraries rely on code written in a "native" language,
+	such as JNI (Java Native Interface) code.  This native code is
+	compiled into separate dynamic libraries which are loaded by the
+	Java virtual machine at runtime.
+      </para>
+
+      <para>
+	If a Java library relies on native code, the dynamic libraries
+	containing this compiled native code &should; be installed into
+	the directory <filename>/usr/lib/jni</filename>.  These dynamic
+	libraries &should; be shipped in a separate architecture-specific
+	package named libXXX[version]-jni.  The package containing the Java
+	bytecode (generally libXXX[version]-java) &should; depend on
+	this package.
+      </para>
+      <para>
+	There may be situations, such as with very small packages,
+	where it is better to bundle the Java code and the native code
+	together into a single package. Such packages &should; be
+	architecture-specific and follow the usual libXXX[version]-java
+	naming convention.
+      </para>
+
+      <para>
+	Java library packages &should; compile the javadoc API of the
+ 	library. The API &must; link against the javadoc API of the
+	libraries it depends on. This includes the core java classes,
+	which are provided by &d-jdoc;. The API &must; be registered with
+	doc-base and &must; be installed in
+	<filename>/usr/share/doc/&lt;package&gt;/api/</filename> or
+	<filename>/usr/share/doc/&lt;package&gt;/api-&lt;component&gt;/</filename>.
+      </para>
+      <para>
+	The API &must; be placed in a separate doc package. This package
+	&must; recommend the doc packages it was linked against.
+      </para>
+    </sect1>
+
+    <sect1 id="policy-gcj-native">
+      <title>Native Java Bytecode (gcj packages)</title>
+
+      <para>
+	Java bytecode compiled into native code is referred to as
+	gcj-code and packages containing gcj-code as gcj-packages.
+      </para>
+
+      <para>
+	gcj-packages has been added in order to improve
+	performance of Java libraries and programs. This is
+	particularly useful on architectures where the JVM
+	does not have a &JIT;. However, this performance comes 
+	at the cost of size, extra compilation time and
+	creates architecture dependent packages.
+      </para>
+
+      <para>
+ 	Packages &mustnot; ship gcj-code without the permission of
+ 	the Java team (&djmail;). Source packages that shipped
+ 	gcj-packages as of March 22nd,2010, have been given this
+ 	permission through the ratification of this policy.
+      </para>
+
+      <para>
+	A request for permission to add gcj should convince
+	the Java Team that the performance boost of adding
+	the gcj-packages out-weights the disadvantages.
+      </para>
+
+      <para>
+	Source packages compiling gcj-packages &must; Build-Depend on
+	&g-n-h; (formerly known as &d-jbdep;). The gcj-code &should;
+	only be shipped for a selected set of architectures.
+      </para>
+
+      <para>
+ 	The gcj-code &must; be installed in <filename>/usr/lib/gcj/</filename>
+	and shipped separately from the original jar file. The gcj-package
+	&must; also install the classmap file generated by aot-compile in
+	<filename>/usr/share/gcj/classmap.d/</filename>.
+      </para>
+
+      <para>
+	The gcj-package &must; call rebuild-gcj-db in the postinst and
+	postrm script, if rebuild-gcj-db is present.
+      </para>
+
+      <para>
+	The gcj-package &must; depend on the package providing the jar
+	file, it is a native compilation.
+ 	The package containing the jar file &must; declare either a
+	Suggests or a Recommends relationship on the gcj-package.
+     </para>
+
+    </sect1>
+
+    <sect1 id="policy-politics">
+      <title>Main, contrib or non-free</title>
+      <para>
+	About politics: packaging Java stuff changes nothing to the
+	rules Debian uses to find if a program is free or not. Since there are
+	not many free Java tools, keep in mind the following:
+      </para>
+      
+      <itemizedlist>
+	<listitem>
+	  <para>
+	    If your source package can compile (correctly) only
+	    with non-free tools, it cannot go to main. If your package itself
+	    is free, it &must; go to contrib.
+	  </para>
+	</listitem>
+	
+	<listitem>
+	  <para>
+	    If your binary package can run only with non-free
+	    virtual machines
+	    (<ulink
+	    url="http://www.gnu.org/software/classpath">GNU-Classpath</ulink> has
+	    a list of free versions), it cannot go to main. If
+	    your package itself is free, it &must; go to contrib.
+	    Since java libraries do not have a runtime dependency,
+	    this rule does not apply to them.
+	  </para>
+	</listitem>
+      
+      </itemizedlist>
+    </sect1>
+  </chapter>
+  
+  <chapter id="to-discuss">
+    <title>Issues to discuss</title>
+    
+    <para>
+      The following points are discussions about the policy, either
+      because they have to be studied more, or are controversial.</para>
+    
+    <itemizedlist>
+      <listitem>
+	<para>
+	  Name and existence of the repository. It was removed
+	  in the latest version.
+	</para>
+      </listitem>
+
+      <listitem>
+	<para>
+	  The symbolic links in <filename>/usr/share/java</filename> be
+	  made by a script instead, similar to the c-libraries.
+	</para>
+      </listitem>
+
+      
+      <listitem>
+	<para>Core classes (<filename>java.*</filename>). More study
+	  needed.</para>
+      </listitem>
+      
+      <listitem>
+	<para>
+	  Sun's Community Source Licence. Can we use it? How?
+	  The 2.3 version of the text can be found 
+	  <ulink url="http://wwws.sun.com/software/java2/license.html">here</ulink>.
+	</para>
+      </listitem>
+
+      <listitem>
+	<para>All jars must have a good CLASSPATH documentation, but
+	  how should it be documented. The best solution is probably in some
+	  computer parsable format to make it even easier for the developer.
+	</para>
+	<para>It should exist some tool to parse this. How should it
+	  work?
+	</para>
+	<para>Should the tool also be used to create the necessary symbolic
+	  links needed by servlets under tomcat?
+	</para>
+      </listitem>
+      
+      <listitem>
+	<para>
+	  Should there be a default CLASSPATH, similar to a
+	  repository? Which jars should be included in that? A standard and
+	  one optional part? If there are a default CLASSPATH (in the
+	  wrapper) how should it be overridden?
+	</para>
+      </listitem>      
+
+      <listitem>
+	<para>How to check for a good enough &JVM;, and to select a
+	  proper one to use. Are <filename>/etc/alternatives</filename>
+	  not good enough?
+	</para>
+      </listitem>
+      
+      <listitem>
+	<para>
+	  Should the &JVM; internal classes be possible to
+	  override entirely and how?
+	</para>
+      </listitem>
+    </itemizedlist>
+  </chapter>
+  
+  <chapter id="advices">
+    <title>Advices to Java packagers</title>
+    
+    <para>
+      Warning: These are just advices, they are not part of the policy.
+    </para>
+    
+    <itemizedlist>
+      <listitem>
+	<para>
+	  Be sure to manage all dependencies by hand in
+	  <filename>debian/control</filename>. Debian development tools cannot
+	  find them automatically like they do with C programs and libraries 
+	  (or like dh_perl does it for Perl, a volunteer to write dh_java
+	  would be welcome).
+	</para>
+      </listitem>
+      
+      <listitem>
+	<para>
+	  You can suppress many calls in <filename>debian/rules</filename>
+	  which are meaningless for Java, like dh_strip and dh_shlibdeps.
+	</para>
+      </listitem>
+      
+      <listitem>
+	<para>
+	  Source package handling is painful, since most Java
+	  upstream programs come with <filename>.class</filename> files. I
+	  suggest to make a new <filename>.orig</filename> tarball after
+	  cleaning them, otherwise, dpkg-source will complain.
+	</para>
+      </listitem>
+      
+      <listitem>
+	<para>
+	  Java properties files are probably better under
+	  <filename>/etc</filename> and flagged as configuration files (this
+	  will be integrated in the policy, one day).
+	</para>
+      </listitem>
+      <listitem>
+	<para>
+	  Java packages &should; be built with &d-jdk; if possible.
+	</para>
+      </listitem>
+    </itemizedlist>
+    
+  </chapter>
+  
+</book>
