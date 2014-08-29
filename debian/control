@@ -2,13 +2,14 @@ Source: java-common
 Section: java
 Priority: optional
 Maintainer: Debian Java Mailing List <debian-java@lists.debian.org>
-Uploaders: Michael Koch <konqueror@gmx.de>, Matthias Klose <doko@debian.org>, Torsten Werner <twerner@debian.org>,
+Uploaders: Matthias Klose <doko@debian.org>, Torsten Werner <twerner@debian.org>,
  Niels Thykier <niels@thykier.net>
-Build-Depends: debhelper (>= 7)
+Build-Depends: debhelper (>= 9)
 Build-Depends-Indep: debiandoc-sgml, docbook-utils, docbook-xml, lynx
-Standards-Version: 3.9.3
-Vcs-Svn: svn://svn.debian.org/svn/pkg-java/trunk/java-common
-Vcs-Browser: http://svn.debian.org/wsvn/pkg-java/trunk/java-common/
+Standards-Version: 3.9.5
+Vcs-Svn: svn://anonscm.debian.org/pkg-java/trunk/java-common
+Vcs-Browser: http://anonscm.debian.org/viewvc/pkg-java/trunk/java-common/
+Homepage: https://wiki.debian.org/Java/
 
 Package: java-common
 Architecture: all
@@ -33,7 +34,7 @@ Depends: default-jre-headless (= ${binary:Version}), ${jre}${jre:version},
  ${misc:Depends}
 Provides: ${jre:provides}
 Description: Standard Java or Java compatible Runtime
- This package points to the Java runtime, or Java compatible
+ This dependency package points to the Java runtime, or Java compatible
  runtime recommended for the ${jre:arch} architecture,
  which is ${jre} for ${jre:arch}.
 
@@ -57,7 +58,7 @@ Depends: default-jre (= ${binary:Version}), ${jdk}${jdk:version},
  ${misc:Depends}
 Provides: ${jdk:provides}
 Description: Standard Java or Java compatible Development Kit
- This package points to the Java runtime, or Java compatible
+ This dependency package points to the Java runtime, or Java compatible
  development kit recommended for this architecture, which is
  ${jdk} for ${jre:arch}.
 
@@ -78,7 +79,7 @@ Provides: default-jdk-builddep
 Conflicts: default-jdk-builddep
 Replaces: default-jdk-builddep
 Description: Standard helper tools for creating gcj native packages
- This package points to the build dependencies used to build
+ This dependency package points to the build dependencies used to build
  gcj native packages.
  .
  Unlike default-jdk-builddep, this package only provides the

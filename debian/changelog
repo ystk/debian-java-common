@@ -1,3 +1,89 @@
+java-common (0.52) unstable; urgency=medium
+
+  * Team upload.
+  * Use OpenJDK 7 on mips64el (Closes: #747179)
+  * Prepared the default values for Java 8
+  * Use 'set -e' instead of '#!/bin/sh -e' in debian/java-common.postrm
+  * Switch to debhelper level 9
+  * debian/control:
+    - Standards-Version updated to 3.9.5 (no changes)
+    - Use a canonical URL for the Vcs-Svn field
+    - Added the Homepage field
+
+ -- Emmanuel Bourg <ebourg@apache.org>  Tue, 06 May 2014 11:10:05 +0200
+
+java-common (0.51) unstable; urgency=low
+
+  [ Sylvestre Ledru ]
+  * Fix some wrong version declarations
+
+  [ Matthias Klose ]
+  * Promote openjdk-7 as default-java on arm64, mips, mipsel, powerpcspe,
+    ppc64el, x32.
+  * Revert back to gcj on ia64. openjdk-7 fails to build, not porter feedback.
+  * Revert back to gcj on s390. openjdk-7 fails to build, not a release
+    architecture anymore.
+  * Revert back to gcj on sparc and sparc64. Hotspot for sparc isn't
+    maintained anymore upstream.  No porter feedback about a Zero port.
+  * Revert back to gcj on kfreebsd-{i386,amd64}.  The port is not yet
+    available upstream.  No feedback from the kfreebsd porters, and no
+    updates for new upstream versions.
+  * Bump the epoch on the default-{jre-headless,jre,jdk} packages.
+
+ -- Niels Thykier <niels@thykier.net>  Sat, 01 Feb 2014 13:03:13 +0100
+
+java-common (0.50) unstable; urgency=low
+
+  * Remove the 'Libraries must depend on the needed runtime environment'
+    from the policy. It was wrong and conflicting with lintian.
+    (Closes: #730133)
+
+  [ Damien Raude-Morvan ]
+  * Promote openjdk-7 as default-java on kfreebsd-{i386,amd64}.
+
+ -- Sylvestre Ledru <sylvestre@debian.org>  Sat, 23 Nov 2013 14:55:24 +0100
+
+java-common (0.49) unstable; urgency=low
+
+  [ Sylvestre Ledru ]
+  * Team upload.
+  * Finalize the upload to switch to OpenJDK 7.
+    See http://lists.debian.org/debian-devel-announce/2013/08/msg00000.html
+  * Fix empty-binary-package on gcj-native-helper, default-jre & default-jdk
+  * Remove local variables in the changelog
+  * Update of the Debian Java FAQ (was starting to become obsolete)
+  * Update of the Java policy:
+    - Recommend default-jre & default-jre-headless for Java libraries
+    - Create a section "Building Java packages"
+      - Promote default-jdk
+      - Advice to use javahelper
+      - Recommend maven-debian-helper
+    - Remove some deprecated references to java-runtime{1,2}
+    - Minor improvements
+    - State the license of the policy (Closes: #687841)
+
+  [ tony mancill ]
+  * Upload to unstable to make openjdk-7 the default on architectures
+    where it is supported.
+  * Bump Standards-Version to 3.9.4.
+  * Update Vcs-Svn URL.
+
+  [ Matthias Klose ]
+  * Don't blindly update to OpenJDK7 on architectures where it is not
+    supported or not even built.
+  * Provide a /usr/share/java/java_defaults.mk makefile fragment for
+    supported java architectures and versions.
+
+ -- Sylvestre Ledru <sylvestre@debian.org>  Mon, 05 Aug 2013 17:18:05 +0200
+
+java-common (0.48) experimental; urgency=low
+
+  * Upload to experimental.
+  * Replace java6 with java7 on architectures supporting
+    openjdk-7.
+
+ -- Niels Thykier <niels@thykier.net>  Mon, 18 Jun 2012 14:29:24 +0200
+
 java-common (0.47) unstable; urgency=low
 
   * Add creation and removal of /etc/.java (common to different OpenJDK
@@ -524,6 +610,4 @@ java-common (0.0-1) unstable; urgency=low
 
  -- Stephane Bortzmeyer <bortzmeyer@debian.org>  Wed, 23 Jun 1999 15:03:43 +0200
 
-Local variables:
-mode: debian-changelog
-End:
+
