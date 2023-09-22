@@ -1,0 +1,2 @@
+Tests: supported-architectures
+Depends: @, build-essential

@@ -1,3 +1,12 @@
+java-common (0.52+deb8u2) jessie-lts; urgency=medium
+
+  * Non-maintainer upload by the ELTS Team
+  * Fix java7_architectures to include java8_architectures in java_defaults.mk
+  * Add debian/salsa-ci.yml using lts-team/pipeline for jessie
+  * Add debian/tests/supported-architectures
+
+ -- Santiago Ruano Rincón <santiago@freexian.com>  Thu, 21 Sep 2023 18:47:08 -0300
+
 java-common (0.52+deb8u1) jessie; urgency=medium
 
   * Switch to Java 8 as default, Java 7 is no longer supported
